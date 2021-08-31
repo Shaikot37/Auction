@@ -6,9 +6,9 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 
-## Step 1:
-# Used Packages:
-firebase_auth/firebase_auth.dart:
+# Step 1:
+## Used Packages:
+firebase_auth/firebase_auth.dart:\n
 google_sign_in/google_sign_in.dart:
 flutter/material.dart:
 flutter_signin_button/flutter_signin_button.dart:
