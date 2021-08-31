@@ -1,4 +1,4 @@
-# auctionapp
+# Auction App
 
 A new Flutter project.
 
