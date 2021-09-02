@@ -13,7 +13,7 @@ google_sign_in: a secure authentication system for signing in with a Google acco
 flutter/material.dart: Flutter SDK library.  
 flutter_signin_button: A Flutter plugin for iOS and Android for generating signin buttons for different social media account.  
 
-#Step 2:
+# Step 2:
 ## Used Packages:
 firebase_core:  
 firebase_storage:  
