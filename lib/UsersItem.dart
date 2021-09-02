@@ -6,15 +6,16 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'AuctionForm.dart';
 import 'Posts.dart';
-import 'UsersItem.dart';
+import 'HomePage.dart';
 
-class HomePage extends StatefulWidget {
+class UsersItem extends StatefulWidget {
+  final String current_user_id = null;
   @override
-  _HomePageState createState() => _HomePageState();
+  _UsersItemState createState() => _UsersItemState();
 }
 
 
-class _HomePageState extends State<HomePage> {
+class _UsersItemState extends State<UsersItem> {
 
   List<Posts> postsList = [];
 
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   final databaseRef = FirebaseDatabase.instance.reference().child("User");
   FirebaseStorage storage = FirebaseStorage.instance;
   User user;
+
   bool isloggedin = false;
   final Future<FirebaseApp> _future = Firebase.initializeApp();
 
@@ -30,40 +32,6 @@ class _HomePageState extends State<HomePage> {
       if (user == null) {
         Navigator.of(context).pushReplacementNamed("start");
       }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    this.checkAuthentification();
-    this.getUser();
-    DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("User");
-    postsRef.once().then((DataSnapshot snap)
-    {
-      var KEYS = snap.value.keys;
-      var DATA = snap.value;
-
-      postsList.clear();
-
-      for(var individualKey in KEYS){
-        Posts posts = new Posts
-          (
-          DATA[individualKey]['Name'],
-          DATA[individualKey]['Description'],
-          DATA[individualKey]['ImageURL'],
-          DATA[individualKey]['Minimum_Bid_Price'],
-          DATA[individualKey]['End_Date'],
-
-        );
-
-        postsList.add(posts);
-      }
-
-      setState((){
-        print('Length : $postsList.length');
-      });
-
     });
   }
 
@@ -79,6 +47,47 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkAuthentification();
+    this.getUser();
+    DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("User");
+    final String current_user_id = _auth.currentUser.uid;
+    postsRef.once().then((DataSnapshot snap)
+    {
+      var KEYS = snap.value.keys;
+      var DATA = snap.value;
+
+      postsList.clear();
+
+
+      for(var individualKey in KEYS){
+        Posts posts = new Posts
+          (
+          DATA[individualKey]['Name'],
+          DATA[individualKey]['Description'],
+          DATA[individualKey]['ImageURL'],
+          DATA[individualKey]['Minimum_Bid_Price'],
+          DATA[individualKey]['End_Date'],
+
+        );
+
+        print(current_user_id);
+        if(DATA[individualKey]['UserID']== current_user_id){
+
+          postsList.add(posts);}
+      }
+
+      setState((){
+        print('Length : $postsList.length');
+      });
+
+    });
+  }
+
 
   signOut() async {
     _auth.signOut();
@@ -114,7 +123,7 @@ class _HomePageState extends State<HomePage> {
       if (itemSelected == null) return;
 
       if(itemSelected == "1"){
-        userItems();
+        //code here
       }else if(itemSelected == "2"){
         //code here
       }else{
@@ -125,92 +134,87 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void userItems(){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
-      return new UsersItem();
-    }));
-  }
 
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(centerTitle: true,
-          title: Text('Auction App'),
-          leading: IconButton(
-            onPressed: (){
-              debugPrint("Form button clicked");
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return HomePage();
-              }));
-            },
-            icon: Icon(Icons.home),
-          ),
-          actions: [
-            IconButton(
-              onPressed: showPopupMenu,
-              icon: Icon(Icons.more_vert),
-            ),
-          ],
-        ),
-        body:
-          new Container(
-
-            child: postsList.length == 0? new Text("Loading"):
-                new ListView.builder(itemCount: postsList.length,
-                itemBuilder: (_, index){
-                  return PostUI(postsList[index].Minimum_Bid_Price, postsList[index].Description, postsList[index].End_Date, postsList[index].ImageURL, postsList[index].Name);
-                }
-                ),
-
-            ),
-
-
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Colors.brown,
+      appBar: AppBar(centerTitle: true,
+        title: Text('Auction App'),
+        leading: IconButton(
           onPressed: (){
             debugPrint("Form button clicked");
             Navigator.push(context, MaterialPageRoute(builder: (context){
-              return AuctionForm();
+              return HomePage();
             }));
           },
+          icon: Icon(Icons.home),
         ),
+        actions: [
+          IconButton(
+            onPressed: showPopupMenu,
+            icon: Icon(Icons.more_vert),
+          ),
+        ],
+      ),
+      body:
+      new Container(
+
+        child: postsList.length == 0? new Text("Loading"):
+        new ListView.builder(itemCount: postsList.length,
+            itemBuilder: (_, index){
+              return PostUI(postsList[index].Minimum_Bid_Price, postsList[index].Description, postsList[index].End_Date, postsList[index].ImageURL, postsList[index].Name);
+            }
+        ),
+
+      ),
+
+
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.brown,
+        onPressed: (){
+          debugPrint("Form button clicked");
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+            return AuctionForm();
+          }));
+        },
+      ),
     );
   }
 
   Widget PostUI(String image, String description, String date, String minBid, String name){
     return new Card(
       elevation: 10.0,
-        margin : EdgeInsets.all(15.0),
+      margin : EdgeInsets.all(15.0),
       child: new Container(
         padding: new EdgeInsets.all(14.0),
 
         child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
 
-          children:<Widget>[
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children:<Widget>[
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-          children:<Widget>
-          [
-            new Text(
-              name,
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
+                children:<Widget>
+                [
+                  new Text(
+                    name,
+                    style: Theme.of(context).textTheme.subtitle1,
+                    textAlign: TextAlign.center,
 
-            ),
+                  ),
 
-          ],
-      ),
-            SizedBox(height: 10.0,),
-            new Image.network(image, fit:BoxFit.cover),
-            SizedBox(height: 10.0,),
+                ],
+              ),
+              SizedBox(height: 10.0,),
+              new Image.network(image, fit:BoxFit.cover),
+              SizedBox(height: 10.0,),
 
 
-          ]
+            ]
         ),
       ),
     );

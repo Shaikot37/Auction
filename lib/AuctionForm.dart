@@ -1,4 +1,5 @@
-import 'package:auctionapp/HomePage.dart';
+import 'HomePage.dart';
+import 'UsersItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,9 @@ class AuctionForm extends StatefulWidget {
 class _AuctionFormState extends State<AuctionForm> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseRef = FirebaseDatabase.instance.reference();
   final Future<FirebaseApp> _future = Firebase.initializeApp();
   User user;
+  final databaseRef = FirebaseDatabase.instance.reference().child("User");
   bool isloggedin = false;
   bool isloading = false;
   final name = TextEditingController();
@@ -35,7 +36,7 @@ class _AuctionFormState extends State<AuctionForm> {
 
 
   Future getImage() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.camera);
+    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       sampleImage = tempImage;
@@ -51,16 +52,24 @@ class _AuctionFormState extends State<AuctionForm> {
     });
   }
 
+
   Future<void> addData(File sampleImage, String name, String des, String min_bid, String date) async {
     String fileName = sampleImage.path;
     StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(sampleImage);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    final String url = (await taskSnapshot.ref.getDownloadURL());
+    String url = (await taskSnapshot.ref.getDownloadURL());
     print('URL Is $url');
-    databaseRef.push().set({"UserID":user.uid,'Name': name, 'Description': des, 'Minimum Bid Price':min_bid,
-      'ImageURL':url, 'End Date':date});
+    databaseRef.push().set({'Name': name, 'Description': des, 'Minimum_Bid_Price':min_bid,
+      'ImageURL':url, 'End_Date':date, 'UserID': user.uid});
+    gotoHomePage();
 
+  }
+
+  void gotoHomePage(){
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return new HomePage();
+    }));
   }
 
   getUser() async {
@@ -115,7 +124,7 @@ class _AuctionFormState extends State<AuctionForm> {
       if (itemSelected == null) return;
 
       if(itemSelected == "1"){
-        //code here
+        userItems();
       }else if(itemSelected == "2"){
         //code here
       }else{
@@ -124,6 +133,12 @@ class _AuctionFormState extends State<AuctionForm> {
       }
 
     });
+  }
+
+  void userItems(){
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return new UsersItem();
+    }));
   }
 
 
@@ -175,6 +190,7 @@ class _AuctionFormState extends State<AuctionForm> {
 @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(title: Text("Auction Form"),actions: [
           IconButton(
             onPressed: showPopupMenu,
@@ -255,9 +271,6 @@ class _AuctionFormState extends State<AuctionForm> {
                               child: Text("Save"),
                               onPressed: () {
                                 addData(sampleImage, name.text, description.text, min_bidprice.text, _date.text);
-                                Navigator.push(context, MaterialPageRoute(builder: (context){
-                                  return HomePage();
-                                }));
                                 //CircularProgressIndicator();//call method flutter upload
                               }
                           )

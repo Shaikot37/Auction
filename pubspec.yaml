@@ -32,6 +32,7 @@ dependencies:
   flutter_signin_button: ^1.0.0
   firebase_core: ^0.5.3
   firebase_storage: ^4.0.0
+
   image_picker: ^0.6.7+14
   google_sign_in: ^4.5.9
 
