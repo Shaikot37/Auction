@@ -18,12 +18,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 
       theme: ThemeData(
-        primaryColor: Colors.indigoAccent
+        primaryColor: Colors.brown
       ),
       debugShowCheckedModeBanner: false,
-      home: 
-    
-      HomePage(),
+      home: HomePage(),
 
       routes: <String,WidgetBuilder>{
 

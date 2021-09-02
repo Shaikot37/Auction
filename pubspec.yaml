@@ -31,11 +31,18 @@ dependencies:
   firebase_auth: ^0.18.4+1
   flutter_signin_button: ^1.0.0
   firebase_core: ^0.5.3
+  firebase_storage: ^4.0.0
+  image_picker: ^0.6.7+14
   google_sign_in: ^4.5.9
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl: ^0.16.1
+  firebase_database: ^4.4.0
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
