@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'HomePage.dart';
 import 'UsersItem.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,9 +62,14 @@ class _AuctionFormState extends State<AuctionForm> {
     String url = (await taskSnapshot.ref.getDownloadURL());
     print('URL Is $url');
     databaseRef.push().set({'Name': name, 'Description': des, 'Minimum_Bid_Price':min_bid,
-      'ImageURL':url, 'End_Date':date, 'UserID': user.uid});
+      'ImageURL':url, 'End_Date':date, 'UserID': user.uid, 'AuctionID': randomID()});
     gotoHomePage();
 
+  }
+
+  String randomID() {
+    var r = Random();
+    return String.fromCharCodes(List.generate(7, (index) => r.nextInt(33) + 89));
   }
 
   void gotoHomePage(){

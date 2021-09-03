@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           DATA[individualKey]['Minimum_Bid_Price'],
           DATA[individualKey]['ImageURL'],
           DATA[individualKey]['End_Date'],
-
+          DATA[individualKey]['AuctionID']
         );
 
         postsList.add(posts);
@@ -162,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                 new ListView.builder(itemCount: postsList.length,
                 itemBuilder: (_, index){
                   return PostUI(index, postsList[index].ImageURL, postsList[index].Description, postsList[index].End_Date,
-                      postsList[index].Minimum_Bid_Price, postsList[index].Name);
+                      postsList[index].Minimum_Bid_Price, postsList[index].Name, postsList[index].AuctionID);
                 }
                 ),
 
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget PostUI(int index, String image, String description, String date, String minBid, String name){
+  Widget PostUI(int index, String image, String description, String date, String minBid, String name, String auctionID){
     return new GestureDetector(
 
       onTap: (){

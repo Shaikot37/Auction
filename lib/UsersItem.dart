@@ -56,6 +56,7 @@ class _UsersItemState extends State<UsersItem> {
     this.getUser();
     DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("User");
     final String current_user_id = _auth.currentUser.uid;
+
     postsRef.once().then((DataSnapshot snap)
     {
       var KEYS = snap.value.keys;
@@ -72,8 +73,8 @@ class _UsersItemState extends State<UsersItem> {
           DATA[individualKey]['ImageURL'],
           DATA[individualKey]['Minimum_Bid_Price'],
           DATA[individualKey]['End_Date'],
-
-        );
+            DATA[individualKey]['AuctionID']
+          );
 
         print(current_user_id);
         if(DATA[individualKey]['UserID']== current_user_id){
