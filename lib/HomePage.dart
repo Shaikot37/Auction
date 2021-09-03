@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'AuctionForm.dart';
+import 'ItemDetails.dart';
 import 'Posts.dart';
 import 'UsersItem.dart';
 
@@ -51,8 +52,8 @@ class _HomePageState extends State<HomePage> {
           (
           DATA[individualKey]['Name'],
           DATA[individualKey]['Description'],
-          DATA[individualKey]['ImageURL'],
           DATA[individualKey]['Minimum_Bid_Price'],
+          DATA[individualKey]['ImageURL'],
           DATA[individualKey]['End_Date'],
 
         );
@@ -160,7 +161,8 @@ class _HomePageState extends State<HomePage> {
             child: postsList.length == 0? new Text("Loading"):
                 new ListView.builder(itemCount: postsList.length,
                 itemBuilder: (_, index){
-                  return PostUI(postsList[index].Minimum_Bid_Price, postsList[index].Description, postsList[index].End_Date, postsList[index].ImageURL, postsList[index].Name);
+                  return PostUI(index, postsList[index].ImageURL, postsList[index].Description, postsList[index].End_Date,
+                      postsList[index].Minimum_Bid_Price, postsList[index].Name);
                 }
                 ),
 
@@ -180,11 +182,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget PostUI(String image, String description, String date, String minBid, String name){
-    return new Card(
-      elevation: 10.0,
+  Widget PostUI(int index, String image, String description, String date, String minBid, String name){
+    return new GestureDetector(
+
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> ItemDetails(),
+        settings: RouteSettings(
+          arguments: postsList[index],
+          ),
+          ),
+        );
+        },
+
+        child: Card(
+
+        elevation: 10.0,
         margin : EdgeInsets.all(15.0),
-      child: new Container(
+        child: new Container(
         padding: new EdgeInsets.all(14.0),
 
         child: new Column(
@@ -213,6 +227,7 @@ class _HomePageState extends State<HomePage> {
           ]
         ),
       ),
+    )
     );
   }
 

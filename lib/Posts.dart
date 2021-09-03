@@ -1,4 +1,4 @@
 class Posts{
-  String ImageURL, Description, End_Date ,Minimum_Bid_Price, Name;
+  String Minimum_Bid_Price, Description, End_Date ,ImageURL, Name;
   Posts(this.Name, this.Description, this.Minimum_Bid_Price, this.ImageURL, this.End_Date);
 }
