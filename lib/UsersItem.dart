@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'AuctionForm.dart';
+import 'ItemDetails.dart';
 import 'Posts.dart';
 import 'HomePage.dart';
 
@@ -70,8 +71,8 @@ class _UsersItemState extends State<UsersItem> {
           (
           DATA[individualKey]['Name'],
           DATA[individualKey]['Description'],
+            DATA[individualKey]['Minimum_Bid_Price'],
           DATA[individualKey]['ImageURL'],
-          DATA[individualKey]['Minimum_Bid_Price'],
           DATA[individualKey]['End_Date'],
             DATA[individualKey]['AuctionID']
           );
@@ -112,8 +113,7 @@ class _UsersItemState extends State<UsersItem> {
       items: [
         PopupMenuItem<String>(
             child: const Text('My posted items'), value: '1'),
-        PopupMenuItem<String>(
-            child: const Text('Account Settings'), value: '2'),
+
         PopupMenuItem<String>(
             child: const Text('Logout'), value: '3'),
       ],
@@ -124,8 +124,6 @@ class _UsersItemState extends State<UsersItem> {
       if (itemSelected == null) return;
 
       if(itemSelected == "1"){
-        //code here
-      }else if(itemSelected == "2"){
         //code here
       }else{
         //code here
@@ -142,7 +140,7 @@ class _UsersItemState extends State<UsersItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true,
-        title: Text('Auction App'),
+        title: Text('My Items'),
         leading: IconButton(
           onPressed: (){
             debugPrint("Form button clicked");
@@ -162,10 +160,11 @@ class _UsersItemState extends State<UsersItem> {
       body:
       new Container(
 
-        child: postsList.length == 0? new Text("Loading"):
+        child: postsList.length == 0? new Text(""):
         new ListView.builder(itemCount: postsList.length,
             itemBuilder: (_, index){
-              return PostUI(postsList[index].Minimum_Bid_Price, postsList[index].Description, postsList[index].End_Date, postsList[index].ImageURL, postsList[index].Name);
+              return PostUI(index, postsList[index].ImageURL, postsList[index].Description, postsList[index].End_Date,
+                  postsList[index].Minimum_Bid_Price, postsList[index].Name, postsList[index].AuctionID);
             }
         ),
 
@@ -185,8 +184,19 @@ class _UsersItemState extends State<UsersItem> {
     );
   }
 
-  Widget PostUI(String image, String description, String date, String minBid, String name){
-    return new Card(
+  Widget PostUI(int index, String image, String description, String date, String minBid, String name, String auctionID){
+    return new GestureDetector(
+
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> ItemDetails(),
+            settings: RouteSettings(
+              arguments: postsList[index],
+            ),
+          ),
+          );
+        },
+
+    child: Card(
       elevation: 10.0,
       margin : EdgeInsets.all(15.0),
       child: new Container(
@@ -218,6 +228,7 @@ class _UsersItemState extends State<UsersItem> {
             ]
         ),
       ),
+    )
     );
   }
 

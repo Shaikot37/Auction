@@ -118,10 +118,9 @@ class _AuctionFormState extends State<AuctionForm> {
       items: [
         PopupMenuItem<String>(
             child: const Text('My posted items'), value: '1'),
+
         PopupMenuItem<String>(
-            child: const Text('Account Settings'), value: '2'),
-        PopupMenuItem<String>(
-            child: const Text('Logout'), value: '3'),
+            child: const Text('Logout'), value: '2'),
       ],
       elevation: 8.0,
     )
@@ -131,8 +130,6 @@ class _AuctionFormState extends State<AuctionForm> {
 
       if(itemSelected == "1"){
         userItems();
-      }else if(itemSelected == "2"){
-        //code here
       }else{
         //code here
         signOut();
@@ -212,7 +209,10 @@ class _AuctionFormState extends State<AuctionForm> {
               } else {
                 return Container(
                   child: !isloggedin
-                      ? CircularProgressIndicator()
+                      ? SizedBox(height: MediaQuery.of(context).size.height / 1.3,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),)
                       : Column(
                     children: <Widget>[
 
@@ -224,7 +224,7 @@ class _AuctionFormState extends State<AuctionForm> {
                             style: ButtonStyle(
                                 backgroundColor:MaterialStateProperty.all(Colors.blueGrey)
                             ),
-                            child: sampleImage == null ? Text('Select an image') : enableUpload(),
+                            child: sampleImage == null ? Text('Upload an image') : enableUpload(),
                             onPressed: getImage,
                         ),
 

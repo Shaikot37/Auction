@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       setState((){
-        print('Length : $postsList.length');
+        print('Length : ${postsList.length}');
       });
 
     });
@@ -103,10 +103,9 @@ class _HomePageState extends State<HomePage> {
       items: [
         PopupMenuItem<String>(
             child: const Text('My posted items'), value: '1'),
+
         PopupMenuItem<String>(
-            child: const Text('Account Settings'), value: '2'),
-        PopupMenuItem<String>(
-            child: const Text('Logout'), value: '3'),
+            child: const Text('Logout'), value: '2'),
       ],
       elevation: 8.0,
     )
@@ -116,8 +115,6 @@ class _HomePageState extends State<HomePage> {
 
       if(itemSelected == "1"){
         userItems();
-      }else if(itemSelected == "2"){
-        //code here
       }else{
         //code here
         signOut();
@@ -136,7 +133,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      Scaffold(
         appBar: AppBar(centerTitle: true,
           title: Text('Auction App'),
           leading: IconButton(
@@ -156,6 +154,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         body:
+
           new Container(
 
             child: postsList.length == 0? new Text("Loading"):
@@ -171,7 +170,7 @@ class _HomePageState extends State<HomePage> {
 
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
-          backgroundColor: Colors.brown,
+          backgroundColor: Colors.lightBlueAccent,
           onPressed: (){
             debugPrint("Form button clicked");
             Navigator.push(context, MaterialPageRoute(builder: (context){

@@ -122,8 +122,7 @@ class _ItemDetailsState extends State<ItemDetails> {
       items: [
         PopupMenuItem<String>(
             child: const Text('My posted items'), value: '1'),
-        PopupMenuItem<String>(
-            child: const Text('Account Settings'), value: '2'),
+
         PopupMenuItem<String>(
             child: const Text('Logout'), value: '3'),
       ],
@@ -135,8 +134,6 @@ class _ItemDetailsState extends State<ItemDetails> {
 
       if(itemSelected == "1"){
         userItems();
-      }else if(itemSelected == "2"){
-        //code here
       }else{
         //code here
         signOut();
@@ -160,7 +157,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     }
     else{
 
-      _showDialog();
+      _showDialog("You have already bid for this auction");
     }
 
   }
@@ -173,7 +170,7 @@ class _ItemDetailsState extends State<ItemDetails> {
 
 
 
-  void _showDialog() {
+  void _showDialog(String txt) {
     // flutter defined function
     showDialog(
       context: context,
@@ -181,10 +178,10 @@ class _ItemDetailsState extends State<ItemDetails> {
         // return object of type Dialog
         return AlertDialog(
           title: new Text("Sorry!!"),
-          content: new Text("You have bid for this auction"),
+          content: new Text(txt),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
-            new FlatButton(
+            new TextButton(
               child: new Text("Close"),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -197,13 +194,29 @@ class _ItemDetailsState extends State<ItemDetails> {
   }
 
 
+
+  bool isNumber(String string) {
+    // Null or empty string is not a number
+    if (string == null || string.isEmpty) {
+      return false;
+    }
+    final number = num.tryParse(string);
+
+    if (number == null) {
+      return false;
+    }
+    return true;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final Posts todo = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         resizeToAvoidBottomInset: false,
       appBar: AppBar(centerTitle: true,
-        title: Text('Auction App'),
+        title: Text('Item Details'),
         leading: IconButton(
           onPressed: (){
             debugPrint("Form button clicked");
@@ -220,95 +233,294 @@ class _ItemDetailsState extends State<ItemDetails> {
           ),
         ],
       ),
-      body: new Container(
-        child:!isloggedin
-    ?     CircularProgressIndicator()
-        : Column(
-          children: <Widget>[
-          SizedBox(height: 10.0),
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(todo.Name),
+      body:
+          SingleChildScrollView(
+    child:
+      Column(children: <Widget>[
+
+        Container(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:<Widget>[
+
+
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Image.network(todo.ImageURL,height: 300.0,
+                        width: 300.0,
+                        alignment: Alignment.center,),
+                    ),
+
+                    //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],
+                ),
+                SizedBox(height: 20.0,),
+
+              ]
           ),
-          SizedBox(height: 10.0),
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text(todo.Description),
         ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(todo.Minimum_Bid_Price),
+
+
+          Container(
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children:<Widget>[
+            Row(
+      children: <Widget>[
+        Text(
+        "Name: ",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+
+              //child: Text("Geeks",style: TextStyle(color:Colors.black,fontSize:25),),
+            ],),
+            Row(
+              children: <Widget>[
+              Text(
+              todo.Name,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(todo.End_Date),
-            ),
-            SizedBox(height: 10.0),
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Image.network(todo.ImageURL,height: 20.0,),
-            ),
-            SizedBox(height: 10.0),
+
+              //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+            ],),
+            SizedBox(height: 20.0,),
+
+          ]
+      ),
+
+
+
+    ),
+      Container(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children:<Widget>[
+
+
+              Row(
+                children: <Widget>[
+                  Text(
+                    "Description: ",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+
+                  //child: Text("Geeks",style: TextStyle(color:Colors.black,fontSize:25),),
+                ],),
+
+
+
+              Row(
+                children: <Widget>[
+                  Text(
+                    todo.Description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+
+                  //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+                ],),
+
+              SizedBox(height: 20.0,),
+
+
+            ]
+        ),
+
+      ),
+
+
+        Container(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:<Widget>[
+
+
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Minimum Bid Price: ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+
+                    //child: Text("Geeks",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+
+
+
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "${todo.Minimum_Bid_Price} Taka",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+
+                    //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+
+                SizedBox(height: 20.0,),
+
+
+              ]
+          ),
+        ),
+
+        Container(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:<Widget>[
+
+
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "End Date: ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+
+                    //child: Text("Geeks",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+
+
+
+                Row(
+                  children: <Widget>[
+                    Text(
+                      todo.End_Date,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+
+                    //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+                SizedBox(height: 20.0,),
+
+              ]
+          ),
+        ),
+
+
+
+
+        Container(
+          child: Column(
+        children: <Widget>[
             Padding(
               padding: EdgeInsets.all(10.0),
               child: TextField(controller: bid,
                   decoration: InputDecoration(
-                    hintText: 'Bid Ammount',)),
+                    hintText: 'Bid Amount..',)),
             ),
 
             SizedBox(height: 20.0),
             Center(
-                child:
-                ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:MaterialStateProperty.all(Colors.blueGrey)
-                    ),
-                    child: Text("Bid"),
-                    onPressed:(){
-                      addBid(bid.text);
-                    },
-
-
+              child:
+              ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:MaterialStateProperty.all(Colors.blueGrey)
                 ),
-
-            ),
-            SizedBox(height: 10.0),
-
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(_bidWinner),
-            ),
-
-
-            bidsList.length == 0? new Text(""):
-            new ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: bidsList.length,
-                itemBuilder: (_, index){
-
-                  if(bidsList[index].UserID == user.uid){
-                    flag = 1;
+                child: Text("Bid"),
+                onPressed:(){
+                  if(isNumber(bid.text)){
+                  addBid(bid.text);
+                  }
+                  else{
+                    _showDialog("Please enter the amount correctly");
                   }
 
-                  return PostUI(bidsList[index].AuctionID, bidsList[index].Bid, bidsList[index].User_name);
-                }
+                },
+
+
+              ),
+
             ),
+]
+    )
+
+        ),
 
 
 
-          ]
-      )
+        Container(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children:<Widget>[
 
 
-    ),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Bid Winner ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+
+                    //child: Text("Geeks",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+
+
+
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(_bidWinner,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20 ,backgroundColor: Colors.lightGreenAccent)),
+                    ),
+
+                    //child: Text("For",style: TextStyle(color:Colors.black,fontSize:25),),
+                  ],),
+                SizedBox(height: 20.0,),
+
+
+              ]
+          ),
+        ),
+
+
+        bidsList.length == 0? new Text(""):
+        new ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: bidsList.length,
+            itemBuilder: (_, index){
+
+              if(bidsList[index].UserID == FirebaseAuth.instance.currentUser.uid){
+                flag = 1;
+              }
+
+              return PostUI(bidsList[index].AuctionID, bidsList[index].Bid, bidsList[index].User_name);
+            }
+        ),
+
+
+
+
+
+      ])
+
+
+
+
+
+          )
 
 
 
 
     );
+
+
+
+
   }
 
   Widget PostUI(String auctionID, String user_name, String bid){
@@ -337,7 +549,7 @@ class _ItemDetailsState extends State<ItemDetails> {
 
                       ),
                       new Text(
-                        bid,
+                        "${bid} Taka",
                         style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.center,
 
