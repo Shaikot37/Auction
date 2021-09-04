@@ -23,7 +23,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   String post_auction_id;
   int flag = 0;
   int winner = 0;
-  String _winnerName = "No Bidder";
+  String _bidWinner = "No bidder yet";
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseRef = FirebaseDatabase.instance.reference().child("User");
   final DatabaseReference bidsRef = FirebaseDatabase.instance.reference().child("Bid");
@@ -68,13 +68,20 @@ class _ItemDetailsState extends State<ItemDetails> {
         final Posts todo = ModalRoute.of(context).settings.arguments;
         post_auction_id = todo.AuctionID;
 
-        if(DATA[individualKey]['AuctionID']== post_auction_id){
 
+        if(DATA[individualKey]['AuctionID']== post_auction_id){
+          int initValue = int.parse(DATA[individualKey]['Bid']);
+
+          if(initValue>winner){
+            _bidWinner = DATA[individualKey]['User_name'];
+            winner = initValue;
+          }
           bidsList.add(bids);}
+        print(_bidWinner);
       }
 
       setState((){
-        print('Length : $bidsList.length');
+        print('Length : ${bidsList.length}');
       });
 
     });
@@ -163,6 +170,8 @@ class _ItemDetailsState extends State<ItemDetails> {
       return new HomePage();
     }));
   }
+
+
 
   void _showDialog() {
     // flutter defined function
@@ -266,9 +275,10 @@ class _ItemDetailsState extends State<ItemDetails> {
 
             ),
             SizedBox(height: 10.0),
+
             Padding(
               padding: EdgeInsets.all(10.0),
-              child: Text("Winner : "),
+              child: Text(_bidWinner),
             ),
 
 
@@ -282,16 +292,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                   if(bidsList[index].UserID == user.uid){
                     flag = 1;
                   }
-                  int a = int.parse(bidsList[index].User_name);
-                  int b =int.parse(bidsList[winner].User_name);
-                  String winnerName;
-                  if(a>b){
-                    winner = index;
-                    winnerName = bidsList[winner].Bid;
-                    print(winnerName);
-                  }
 
-                  return PostUI(winnerName,bidsList[index].AuctionID, bidsList[index].Bid, bidsList[index].User_name);
+                  return PostUI(bidsList[index].AuctionID, bidsList[index].Bid, bidsList[index].User_name);
                 }
             ),
 
@@ -309,7 +311,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     );
   }
 
-  Widget PostUI(String winner,String auctionID, String user_name, String bid){
+  Widget PostUI(String auctionID, String user_name, String bid){
     return new Container(
 
         child: Card(
