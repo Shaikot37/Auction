@@ -21,3 +21,7 @@ firebase_database: It allows to access data from firebase.
 image_picker: It is used for picking image from device gallery.  
 intl: It is used for getting random token in the project.  
 
+
+
+## My every step was very challenging because at first I had to learn basics about flutter and other related things. And then within 7 days i had to make this app. Creating a login signup page was my first challenge but with the hellp of youtube and google i managed to create the system. Then creating a post, creating a form for auction and then put bid on items and declare the winner, everything was quite hard for me as i also had some exam in versity. To be honest i never worked that much hard for years. But I look forward to be an android developer in future.
+
