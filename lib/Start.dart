@@ -72,7 +72,6 @@ class _StartState extends State<Start> {
                           fontWeight: FontWeight.bold,
                           color: Colors.teal))
                 ])),
-
             SizedBox(height: 30.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

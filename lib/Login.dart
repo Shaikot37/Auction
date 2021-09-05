@@ -126,11 +126,12 @@ class _LoginState extends State<Login> {
               ),
             ),
             GestureDetector(
-              child: Text('Create an Account?',style: TextStyle(
-                  color: Colors.blueGrey,
-                  height: 5,
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.bold)),
+              child: Text('Create an Account?',
+                  style: TextStyle(
+                      color: Colors.blueGrey,
+                      height: 5,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold)),
               onTap: navigateToSignUp,
             )
           ],

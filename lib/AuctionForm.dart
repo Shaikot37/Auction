@@ -18,9 +18,7 @@ class AuctionForm extends StatefulWidget {
   _AuctionFormState createState() => _AuctionFormState();
 }
 
-
 class _AuctionFormState extends State<AuctionForm> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Future<FirebaseApp> _future = Firebase.initializeApp();
   User user;
@@ -35,7 +33,6 @@ class _AuctionFormState extends State<AuctionForm> {
   final picker = ImagePicker();
   File sampleImage;
 
-
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
@@ -43,7 +40,6 @@ class _AuctionFormState extends State<AuctionForm> {
       sampleImage = tempImage;
     });
   }
-
 
   checkAuthentification() async {
     _auth.authStateChanges().listen((user) {
@@ -53,27 +49,35 @@ class _AuctionFormState extends State<AuctionForm> {
     });
   }
 
-
-  Future<void> addData(File sampleImage, String name, String des, String min_bid, String date) async {
+  Future<void> addData(File sampleImage, String name, String des,
+      String min_bid, String date) async {
     String fileName = sampleImage.path;
-    StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(fileName);
+    StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child(fileName);
     StorageUploadTask uploadTask = firebaseStorageRef.putFile(sampleImage);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
     String url = (await taskSnapshot.ref.getDownloadURL());
     print('URL Is $url');
-    databaseRef.push().set({'Name': name, 'Description': des, 'Minimum_Bid_Price':min_bid,
-      'ImageURL':url, 'End_Date':date, 'UserID': user.uid, 'AuctionID': randomID()});
+    databaseRef.push().set({
+      'Name': name,
+      'Description': des,
+      'Minimum_Bid_Price': min_bid,
+      'ImageURL': url,
+      'End_Date': date,
+      'UserID': user.uid,
+      'AuctionID': randomID()
+    });
     gotoHomePage();
-
   }
 
   String randomID() {
     var r = Random();
-    return String.fromCharCodes(List.generate(7, (index) => r.nextInt(33) + 89));
+    return String.fromCharCodes(
+        List.generate(7, (index) => r.nextInt(33) + 89));
   }
 
-  void gotoHomePage(){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
+  void gotoHomePage() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new HomePage();
     }));
   }
@@ -105,57 +109,49 @@ class _AuctionFormState extends State<AuctionForm> {
     this.getUser();
   }
 
-  void printFirebase(){
+  void printFirebase() {
     databaseRef.once().then((DataSnapshot snapshot) {
       print('Data : ${snapshot.value}');
     });
   }
 
-  showPopupMenu(){
+  showPopupMenu() {
     showMenu<String>(
       context: context,
-      position: RelativeRect.fromLTRB(25.0, 25.0, 0.0, 0.0),      //position where you want to show the menu on screen
+      position: RelativeRect.fromLTRB(25.0, 25.0, 0.0, 0.0),
+      //position where you want to show the menu on screen
       items: [
-        PopupMenuItem<String>(
-            child: const Text('My posted items'), value: '1'),
-
-        PopupMenuItem<String>(
-            child: const Text('Logout'), value: '2'),
+        PopupMenuItem<String>(child: const Text('My posted items'), value: '1'),
+        PopupMenuItem<String>(child: const Text('Logout'), value: '2'),
       ],
       elevation: 8.0,
-    )
-        .then<void>((String itemSelected) {
-
+    ).then<void>((String itemSelected) {
       if (itemSelected == null) return;
 
-      if(itemSelected == "1"){
+      if (itemSelected == "1") {
         userItems();
-      }else{
+      } else {
         //code here
         signOut();
       }
-
     });
   }
 
-  void userItems(){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
+  void userItems() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new UsersItem();
     }));
   }
-
 
   Widget enableUpload() {
     return Container(
       child: Column(
         children: <Widget>[
           Image.file(sampleImage, height: 200.0, width: 300.0),
-
         ],
       ),
     );
   }
-
 
   _selectDate(BuildContext context) async {
     DateTime newSelectedDate = await showDatePicker(
@@ -183,25 +179,24 @@ class _AuctionFormState extends State<AuctionForm> {
       _date
         ..text = DateFormat.yMMMd().format(_selectedDate)
         ..selection = TextSelection.fromPosition(TextPosition(
-            offset: _date.text.length,
-            affinity: TextAffinity.upstream));
+            offset: _date.text.length, affinity: TextAffinity.upstream));
     }
   }
 
-
-
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: Text("Auction Form"),actions: [
-          IconButton(
-            onPressed: showPopupMenu,
-            icon: Icon(Icons.more_vert),
-          ),
-        ],),
-        body:
-        FutureBuilder(
+        appBar: AppBar(
+          title: Text("Auction Form"),
+          actions: [
+            IconButton(
+              onPressed: showPopupMenu,
+              icon: Icon(Icons.more_vert),
+            ),
+          ],
+        ),
+        body: FutureBuilder(
             future: _future,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
@@ -209,88 +204,90 @@ class _AuctionFormState extends State<AuctionForm> {
               } else {
                 return Container(
                   child: !isloggedin
-                      ? SizedBox(height: MediaQuery.of(context).size.height / 1.3,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),)
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height / 1.3,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
                       : Column(
-                    children: <Widget>[
-
-
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor:MaterialStateProperty.all(Colors.blueGrey)
-                            ),
-                            child: sampleImage == null ? Text('Upload an image') : enableUpload(),
-                            onPressed: getImage,
-                        ),
-
-                      ),
-
-
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(controller: name,
-                            decoration: InputDecoration(
-                            hintText: 'Name',)),
-                      ),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(controller: description,
-                            decoration: InputDecoration(
-                              hintText: 'Description',)),
-                      ),
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(controller: min_bidprice,
-                            decoration: InputDecoration(
-                              hintText: 'Minimum Bid Price',)),
-                      ),
-
-                      SizedBox(height: 10.0),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(
-                        focusNode: AlwaysDisabledFocusNode(),
-                          decoration: InputDecoration(
-                            hintText: 'Auction End DateTime'),
-                        controller: _date,
-                        onTap: () {
-                          _selectDate(context);
-                        },
-                      ),
-                      ),
-
-                      SizedBox(height: 20.0),
-                      Center(
-                          child:
-                          ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:MaterialStateProperty.all(Colors.blueGrey)
+                          children: <Widget>[
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Colors.blueGrey)),
+                                child: sampleImage == null
+                                    ? Text('Upload an image')
+                                    : enableUpload(),
+                                onPressed: getImage,
                               ),
-                              child: Text("Save"),
-                              onPressed: () {
-                                addData(sampleImage, name.text, description.text, min_bidprice.text, _date.text);
-                                //CircularProgressIndicator();//call method flutter upload
-                              }
-                          )
-                      ),
-
-                    ],
-                  ),
+                            ),
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: TextField(
+                                  controller: name,
+                                  decoration: InputDecoration(
+                                    hintText: 'Name',
+                                  )),
+                            ),
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: TextField(
+                                  controller: description,
+                                  decoration: InputDecoration(
+                                    hintText: 'Description',
+                                  )),
+                            ),
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: TextField(
+                                  controller: min_bidprice,
+                                  decoration: InputDecoration(
+                                    hintText: 'Minimum Bid Price',
+                                  )),
+                            ),
+                            SizedBox(height: 10.0),
+                            Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: TextField(
+                                focusNode: AlwaysDisabledFocusNode(),
+                                decoration: InputDecoration(
+                                    hintText: 'Auction End DateTime'),
+                                controller: _date,
+                                onTap: () {
+                                  _selectDate(context);
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
+                            Center(
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Colors.blueGrey)),
+                                    child: Text("Save"),
+                                    onPressed: () {
+                                      addData(
+                                          sampleImage,
+                                          name.text,
+                                          description.text,
+                                          min_bidprice.text,
+                                          _date.text);
+                                      //CircularProgressIndicator();//call method flutter upload
+                                    })),
+                          ],
+                        ),
                 );
               }
-            }
-        )
-    );
+            }));
   }
-
 }
 
 class AlwaysDisabledFocusNode extends FocusNode {

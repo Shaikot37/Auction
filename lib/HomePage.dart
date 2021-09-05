@@ -14,9 +14,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
-
   List<Posts> postsList = [];
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -39,32 +37,29 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     this.checkAuthentification();
     this.getUser();
-    DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("User");
-    postsRef.once().then((DataSnapshot snap)
-    {
+    DatabaseReference postsRef =
+        FirebaseDatabase.instance.reference().child("User");
+    postsRef.once().then((DataSnapshot snap) {
       var KEYS = snap.value.keys;
       var DATA = snap.value;
 
       postsList.clear();
 
-      for(var individualKey in KEYS){
-        Posts posts = new Posts
-          (
-          DATA[individualKey]['Name'],
-          DATA[individualKey]['Description'],
-          DATA[individualKey]['Minimum_Bid_Price'],
-          DATA[individualKey]['ImageURL'],
-          DATA[individualKey]['End_Date'],
-          DATA[individualKey]['AuctionID']
-        );
+      for (var individualKey in KEYS) {
+        Posts posts = new Posts(
+            DATA[individualKey]['Name'],
+            DATA[individualKey]['Description'],
+            DATA[individualKey]['Minimum_Bid_Price'],
+            DATA[individualKey]['ImageURL'],
+            DATA[individualKey]['End_Date'],
+            DATA[individualKey]['AuctionID']);
 
         postsList.add(posts);
       }
 
-      setState((){
+      setState(() {
         print('Length : ${postsList.length}');
       });
-
     });
   }
 
@@ -88,147 +83,132 @@ class _HomePageState extends State<HomePage> {
     await googleSignIn.signOut();
   }
 
-
-  void printFirebase(){
+  void printFirebase() {
     databaseRef.once().then((DataSnapshot snapshot) {
       print('Data : ${snapshot.value}');
     });
   }
 
-
-  showPopupMenu(){
+  showPopupMenu() {
     showMenu<String>(
       context: context,
-      position: RelativeRect.fromLTRB(25.0, 25.0, 0.0, 0.0),      //position where you want to show the menu on screen
+      position: RelativeRect.fromLTRB(25.0, 25.0, 0.0, 0.0),
+      //position where you want to show the menu on screen
       items: [
-        PopupMenuItem<String>(
-            child: const Text('My posted items'), value: '1'),
-
-        PopupMenuItem<String>(
-            child: const Text('Logout'), value: '2'),
+        PopupMenuItem<String>(child: const Text('My posted items'), value: '1'),
+        PopupMenuItem<String>(child: const Text('Logout'), value: '2'),
       ],
       elevation: 8.0,
-    )
-        .then<void>((String itemSelected) {
-
+    ).then<void>((String itemSelected) {
       if (itemSelected == null) return;
 
-      if(itemSelected == "1"){
+      if (itemSelected == "1") {
         userItems();
-      }else{
+      } else {
         //code here
         signOut();
       }
-
     });
   }
 
-  void userItems(){
-    Navigator.push(context, MaterialPageRoute(builder: (context){
+  void userItems() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new UsersItem();
     }));
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return
-      Scaffold(
-        appBar: AppBar(centerTitle: true,
-          title: Text('Auction App'),
-          leading: IconButton(
-            onPressed: (){
-              debugPrint("Form button clicked");
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                return HomePage();
-              }));
-            },
-            icon: Icon(Icons.home),
-          ),
-          actions: [
-            IconButton(
-              onPressed: showPopupMenu,
-              icon: Icon(Icons.more_vert),
-            ),
-          ],
-        ),
-        body:
-
-          new Container(
-
-            child: postsList.length == 0? new Text("Loading"):
-                new ListView.builder(itemCount: postsList.length,
-                itemBuilder: (_, index){
-                  return PostUI(index, postsList[index].ImageURL, postsList[index].Description, postsList[index].End_Date,
-                      postsList[index].Minimum_Bid_Price, postsList[index].Name, postsList[index].AuctionID);
-                }
-                ),
-
-            ),
-
-
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Colors.lightBlueAccent,
-          onPressed: (){
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Auction App'),
+        leading: IconButton(
+          onPressed: () {
             debugPrint("Form button clicked");
-            Navigator.push(context, MaterialPageRoute(builder: (context){
-              return AuctionForm();
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return HomePage();
             }));
           },
+          icon: Icon(Icons.home),
         ),
-    );
-  }
-
-  Widget PostUI(int index, String image, String description, String date, String minBid, String name, String auctionID){
-    return new GestureDetector(
-
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> ItemDetails(),
-        settings: RouteSettings(
-          arguments: postsList[index],
+        actions: [
+          IconButton(
+            onPressed: showPopupMenu,
+            icon: Icon(Icons.more_vert),
           ),
-          ),
-        );
+        ],
+      ),
+      body: new Container(
+        child: postsList.length == 0
+            ? new Text("Loading")
+            : new ListView.builder(
+                itemCount: postsList.length,
+                itemBuilder: (_, index) {
+                  return PostUI(
+                      index,
+                      postsList[index].ImageURL,
+                      postsList[index].Description,
+                      postsList[index].End_Date,
+                      postsList[index].Minimum_Bid_Price,
+                      postsList[index].Name,
+                      postsList[index].AuctionID);
+                }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.lightBlueAccent,
+        onPressed: () {
+          debugPrint("Form button clicked");
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return AuctionForm();
+          }));
         },
-
-        child: Card(
-
-        elevation: 10.0,
-        margin : EdgeInsets.all(15.0),
-        child: new Container(
-        padding: new EdgeInsets.all(14.0),
-
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          children:<Widget>[
-            new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-          children:<Widget>
-          [
-            new Text(
-              name,
-              style: Theme.of(context).textTheme.subtitle1,
-              textAlign: TextAlign.center,
-
-            ),
-
-          ],
       ),
-            SizedBox(height: 10.0,),
-            new Image.network(image, fit:BoxFit.cover),
-            SizedBox(height: 10.0,),
-
-
-          ]
-        ),
-      ),
-    )
     );
   }
 
+  Widget PostUI(int index, String image, String description, String date,
+      String minBid, String name, String auctionID) {
+    return new GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ItemDetails(),
+              settings: RouteSettings(
+                arguments: postsList[index],
+              ),
+            ),
+          );
+        },
+        child: Card(
+          elevation: 10.0,
+          margin: EdgeInsets.all(15.0),
+          child: new Container(
+            padding: new EdgeInsets.all(14.0),
+            child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      new Text(
+                        name,
+                        style: Theme.of(context).textTheme.subtitle1,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  new Image.network(image, fit: BoxFit.cover),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                ]),
+          ),
+        ));
+  }
 }
-
