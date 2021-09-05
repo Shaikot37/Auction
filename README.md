@@ -13,11 +13,15 @@ google_sign_in: a secure authentication system for signing in with a Google acco
 flutter/material.dart: Flutter SDK library.  
 flutter_signin_button: A Flutter plugin for iOS and Android for generating signin buttons for different social media account.  
 
-# Step 2:
-## Used Packages:
-firebase_core:  
-firebase_storage:  
-firebase_database:  
-image_picker:  
-intl:  
+# Step 2:  
+## Used Packages:  
+firebase_core: It is responsible for connecting my Flutter app to Firebase project.    
+firebase_storage: It allows to interact with Storage using the default Firebase App.   
+firebase_database: It allows to access data from firebase.  
+image_picker: It is used for picking image from device gallery.  
+intl: It is used for getting random token in the project.  
+
+
+
+## My every step was very challenging because at first I had to learn basics about flutter and other related things. And then within 7 days i had to make this app. Creating a login signup page was my first challenge but with the help of youtube and google i managed to create the system. Then creating a post, creating a form for auction and then put bid on items and declare the winner, everything was quite hard for me as i also had some exam in versity. To be honest i hardly worked that much hard for years. But I enjoyed that challenge and looking forward to be an android developer in future.
 
