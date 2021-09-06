@@ -139,12 +139,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: new Container(
-        child: postsList.length == 0
-            ? new Text("Loading")
-            : new ListView.builder(
-                itemCount: postsList.length,
-                itemBuilder: (_, index) {
+      body:
+
+      new GridView.count(
+          primary: true,
+          crossAxisCount: 2,
+          childAspectRatio: 0.80,
+          children: List.generate(postsList.length, (index)
+         {
                   return PostUI(
                       index,
                       postsList[index].ImageURL,
@@ -184,11 +186,11 @@ class _HomePageState extends State<HomePage> {
         },
         child: Card(
           elevation: 10.0,
-          margin: EdgeInsets.all(15.0),
+          margin: EdgeInsets.all(10.0),
           child: new Container(
-            padding: new EdgeInsets.all(14.0),
+            padding: new EdgeInsets.all(10.0),
             child: new Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   new Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,7 +205,8 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  new Image.network(image, fit: BoxFit.cover),
+                  new Image.network(image, fit: BoxFit.cover,height: 140.0,
+                    width: 120.0,),
                   SizedBox(
                     height: 10.0,
                   ),
