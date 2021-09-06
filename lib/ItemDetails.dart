@@ -134,18 +134,53 @@ class _ItemDetailsState extends State<ItemDetails> {
   }
 
   void addBid(String bid) {
+    final Posts todo = ModalRoute.of(context).settings.arguments;
     if (flag == 0) {
-      final Posts todo = ModalRoute.of(context).settings.arguments;
+
       bidsRef.push().set({
         'Bid': bid,
         'User_name': user.displayName,
         'AuctionID': todo.AuctionID,
         'UserID': user.uid
       });
-      refresh();
+
     } else {
-      _showDialog("You have already bid for this auction");
+
+      bidsRef.once().then((DataSnapshot snap) {
+        var KEYS = snap.value.keys;
+        var DATA = snap.value;
+
+        for (var individualKey in KEYS) {
+          Bids bids = new Bids(
+            DATA[individualKey]['AuctionID'],
+            DATA[individualKey]['User_name'],
+            DATA[individualKey]['Bid'],
+            DATA[individualKey]['UserID'],
+          );
+
+          if (DATA[individualKey]['UserID'] == user.uid && DATA[individualKey]['AuctionID'] == todo.AuctionID) {
+
+            String key = individualKey;
+            print("key:$key");
+
+            bidsRef.child(key).remove();
+
+            bidsRef.child(key).set({
+              'Bid': bid,
+              'User_name': user.displayName,
+              'AuctionID': todo.AuctionID,
+              'UserID': user.uid
+            });
+
+          }
+
+        }
+
+      });
+
     }
+
+    refresh();
   }
 
   void refresh() {
